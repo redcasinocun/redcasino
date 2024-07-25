@@ -24,6 +24,7 @@
             max-width: 100vw;
             max-height: 100vh;
             background-color: black;
+            display: block;
         }
         #codigoUnico {
             position: absolute;
@@ -37,42 +38,23 @@
             border-radius: 5px;
             display: none;
         }
-        #participaBtn, #startButton {
-            font-size: 1.5em;
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            position: absolute;
-            z-index: 10;
-        }
         #startButton {
             width: 70px;
             height: 70px;
             background-color: red;
             border-radius: 50%;
-            color: white;
-            font-size: 1.2em;
             border: 5px solid #fff;
             box-shadow: 0 0 15px rgba(255, 0, 0, 0.8);
             cursor: pointer;
-            display: none; /* Ocultar el botón redondo por defecto */
+            position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
+            z-index: 10;
         }
         #startButton:active {
             transform: translate(-50%, -50%) scale(0.95);
             background-color: darkred;
-        }
-        #participaBtn {
-            bottom: 20px;
-        }
-        #participaBtn:disabled {
-            background-color: #808080;
-            cursor: not-allowed;
         }
     </style>
 </head>
@@ -81,8 +63,7 @@
         <source src="ruleta.mp4" type="video/mp4">
         Tu navegador no soporta video HTML5.
     </video>
-    <button id="participaBtn">PARTICIPA YA</button>
-    <button id="startButton">START</button>
+    <button id="startButton"></button>
     <p id="codigoUnico">Código único: <span id="codigo"></span></p>
     <script>
         // Función para generar un código único de 5 dígitos
@@ -92,7 +73,6 @@
 
         // Obtener elementos del DOM
         const video = document.getElementById('ruletaVideo');
-        const participaBtn = document.getElementById('participaBtn');
         const startButton = document.getElementById('startButton');
         const codigoUnicoElemento = document.getElementById('codigoUnico');
         const codigoElemento = document.getElementById('codigo');
@@ -100,14 +80,14 @@
 
         // Verificar si el video ya ha sido reproducido
         if (localStorage.getItem(localStorageKey)) {
-            participaBtn.disabled = true;
+            startButton.style.display = 'none';
             codigoUnicoElemento.style.display = 'block';
             codigoElemento.innerText = localStorage.getItem('uniqueCode');
+            video.pause();
+            video.currentTime = video.duration;
             video.removeAttribute('controls'); // Asegurarse de que no haya controles
         } else {
-            // Mostrar los botones si el video no ha sido reproducido
-            startButton.style.display = 'block'; // Mostrar el botón redondo
-            participaBtn.style.display = 'block'; // Mostrar el botón de texto
+            startButton.style.display = 'block'; // Mostrar el botón redondo si el video no ha sido reproducido
         }
 
         // Mostrar código único al finalizar el video
@@ -118,10 +98,7 @@
                 codigoUnicoElemento.style.display = 'block';
                 localStorage.setItem('uniqueCode', uniqueCode);
                 localStorage.setItem(localStorageKey, 'true');
-                participaBtn.disabled = true;
                 startButton.style.display = 'none'; // Ocultar el botón redondo después de finalizar
-                video.pause(); // Pausar el video
-                video.currentTime = 0; // Reiniciar el video al inicio
                 video.removeAttribute('controls'); // Asegurar que los controles estén ocultos
             }
         });
@@ -133,19 +110,6 @@
                 video.muted = false; // Asegurar que el video no está en mute
                 video.play();
                 startButton.style.display = 'none'; // Ocultar el botón redondo después de iniciar
-                participaBtn.disabled = true; // Deshabilitar el botón "PARTICIPA YA"
-                video.setAttribute('controls', ''); // Añadir controles al video para la interacción
-            }
-        });
-
-        // Reproducir el video al hacer clic en el botón de texto
-        participaBtn.addEventListener('click', function() {
-            if (!localStorage.getItem(localStorageKey)) {
-                video.style.display = 'block'; // Asegurar que el video está visible
-                video.muted = false; // Asegurar que el video no está en mute
-                video.play();
-                participaBtn.disabled = true; // Deshabilitar el botón después de reproducir el video
-                startButton.style.display = 'none'; // Ocultar el botón redondo si se usa el de texto
                 video.setAttribute('controls', ''); // Añadir controles al video para la interacción
             }
         });
