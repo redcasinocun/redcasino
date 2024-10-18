@@ -23,8 +23,7 @@
             height: auto;
             max-width: 100vw;
             max-height: 100vh;
-            background-color: black;
-            display: block;
+            display: none; /* Inicialmente ocultar el video */
         }
         #codigoUnico {
             position: absolute;
@@ -36,7 +35,7 @@
             padding: 10px;
             background-color: rgba(0, 0, 0, 0.5);
             border-radius: 5px;
-            display: none;
+            display: none; /* Ocultar el código inicialmente */
         }
         #startButton {
             width: 70px;
@@ -59,7 +58,7 @@
     </style>
 </head>
 <body>
-    <video id="ruletaVideo" muted>
+    <video id="ruletaVideo" playsinline>
         <source src="ruleta.mp4" type="video/mp4">
         Tu navegador no soporta video HTML5.
     </video>
@@ -83,11 +82,9 @@
             startButton.style.display = 'none';
             codigoUnicoElemento.style.display = 'block';
             codigoElemento.innerText = localStorage.getItem('uniqueCode');
-            video.pause();
-            video.currentTime = video.duration;
-            video.removeAttribute('controls'); // Asegurarse de que no haya controles
         } else {
             startButton.style.display = 'block'; // Mostrar el botón redondo si el video no ha sido reproducido
+            video.style.display = 'block'; // Mostrar el video en el inicio
         }
 
         // Mostrar código único al finalizar el video
@@ -99,20 +96,21 @@
                 localStorage.setItem('uniqueCode', uniqueCode);
                 localStorage.setItem(localStorageKey, 'true');
                 startButton.style.display = 'none'; // Ocultar el botón redondo después de finalizar
-                video.removeAttribute('controls'); // Asegurar que los controles estén ocultos
             }
         });
 
         // Reproducir el video al hacer clic en el botón redondo
         startButton.addEventListener('click', function() {
             if (!localStorage.getItem(localStorageKey)) {
-                video.style.display = 'block'; // Asegurar que el video está visible
-                video.muted = false; // Asegurar que el video no está en mute
-                video.play();
-                startButton.style.display = 'none'; // Ocultar el botón redondo después de iniciar
-                video.setAttribute('controls', ''); // Añadir controles al video para la interacción
+                video.style.display = 'block'; // Hacer visible el video
+                video.play().then(() => {
+                    startButton.style.display = 'none'; // Ocultar el botón después de iniciar
+                }).catch(error => {
+                    console.error('Error al intentar reproducir el video:', error);
+                });
             }
         });
     </script>
 </body>
 </html>
+
