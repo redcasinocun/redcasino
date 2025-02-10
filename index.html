@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ruleta de Premios</title>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script> <!-- Íconos FontAwesome -->
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -55,6 +56,35 @@
             transform: translate(-50%, -50%) scale(0.95);
             background-color: darkred;
         }
+
+        /* ESTILOS PARA LOS BOTONES DE UBICACIÓN */
+        .location-button {
+            font-size: 60px; /* Tamaño grande del icono */
+            color: #ff0000; /* Rojo neón */
+            text-decoration: none;
+            position: relative;
+            margin: 20px;
+            transition: transform 0.1s ease-in-out;
+        }
+
+        .location-button:active {
+            transform: scale(0.9); /* Efecto de push */
+        }
+
+        .location-container {
+            display: none; /* Ocultos hasta que termine el video */
+            position: absolute;
+            bottom: 20px;
+            display: flex;
+            gap: 50px;
+        }
+
+        .location-label {
+            text-align: center;
+            font-size: 1.2em;
+            color: white;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
@@ -64,30 +94,47 @@
     </video>
     <button id="startButton"></button>
     <p id="codigoUnico">Código único: <span id="codigo"></span></p>
+
+    <!-- CONTENEDOR DE LOS BOTONES DE UBICACIÓN -->
+    <div class="location-container" id="locationContainer">
+        <div>
+            <a href="https://www.google.com.mx/maps/place/Red+Casino/@21.0785061,-86.7933542,15z/data=!4m15!1m8!3m7!1s0x8f4c283106086ccb:0x1191f00ed0b3b7a7!2sRed+Casino!8m2!3d21.0785071!4d-86.7749001!10e1!16s%2Fg%2F11g7y6b27k!3m5!1s0x8f4c283106086ccb:0x1191f00ed0b3b7a7!8m2!3d21.0785071!4d-86.7749001!16s%2Fg%2F11g7y6b27k?entry=ttu" 
+               target="_blank" class="location-button">
+                <i class="fas fa-map-marker-alt"></i>
+            </a>
+            <p class="location-label">RED CANCÚN</p>
+        </div>
+        <div>
+            <a href="https://www.google.com.mx/maps/place/Galerias+Tec/@31.7143933,-106.4245947,17z/data=!3m2!4b1!5s0x86e75c14073f871f:0x6b878c07d55609f8!4m6!3m5!1s0x86e75c14075f643f:0xeda18e2e1d5772d5!8m2!3d31.7143933!4d-106.4220198!16s%2Fg%2F1vd95k2n?entry=ttu" 
+               target="_blank" class="location-button">
+                <i class="fas fa-map-marker-alt"></i>
+            </a>
+            <p class="location-label">RED JUÁREZ</p>
+        </div>
+    </div>
+
     <script>
-        // Función para generar un código único de 5 dígitos
         function generateUniqueCode() {
             return Math.floor(10000 + Math.random() * 90000);
         }
 
-        // Obtener elementos del DOM
         const video = document.getElementById('ruletaVideo');
         const startButton = document.getElementById('startButton');
         const codigoUnicoElemento = document.getElementById('codigoUnico');
         const codigoElemento = document.getElementById('codigo');
+        const locationContainer = document.getElementById('locationContainer');
         const localStorageKey = 'videoWatched';
 
-        // Verificar si el video ya ha sido reproducido
         if (localStorage.getItem(localStorageKey)) {
             startButton.style.display = 'none';
             codigoUnicoElemento.style.display = 'block';
             codigoElemento.innerText = localStorage.getItem('uniqueCode');
+            locationContainer.style.display = 'flex'; // Mostrar los botones si ya se vio el video
         } else {
-            startButton.style.display = 'block'; // Mostrar el botón redondo si el video no ha sido reproducido
-            video.style.display = 'block'; // Mostrar el video en el inicio
+            startButton.style.display = 'block';
+            video.style.display = 'block';
         }
 
-        // Mostrar código único al finalizar el video
         video.addEventListener('ended', function() {
             if (!localStorage.getItem(localStorageKey)) {
                 const uniqueCode = generateUniqueCode();
@@ -95,16 +142,16 @@
                 codigoUnicoElemento.style.display = 'block';
                 localStorage.setItem('uniqueCode', uniqueCode);
                 localStorage.setItem(localStorageKey, 'true');
-                startButton.style.display = 'none'; // Ocultar el botón redondo después de finalizar
+                startButton.style.display = 'none';
+                locationContainer.style.display = 'flex'; // Mostrar los botones al finalizar
             }
         });
 
-        // Reproducir el video al hacer clic en el botón redondo
         startButton.addEventListener('click', function() {
-            if (!localStorage.getItem(localStorageKey)) {
-                video.style.display = 'block'; // Hacer visible el video
+            if (localStorage.getItem(localStorageKey)) {
+                video.style.display = 'block';
                 video.play().then(() => {
-                    startButton.style.display = 'none'; // Ocultar el botón después de iniciar
+                    startButton.style.display = 'none';
                 }).catch(error => {
                     console.error('Error al intentar reproducir el video:', error);
                 });
@@ -113,4 +160,3 @@
     </script>
 </body>
 </html>
-
