@@ -58,19 +58,18 @@
             background-color: darkred;
         }
 
-        /* Contenedor de botones de ubicación */
         .location-container {
             display: none;
-            flex-direction: column;
+            flex-direction: row;
+            justify-content: center;
             align-items: center;
             position: absolute;
-            top: 50%;
+            top: 10px;
             left: 50%;
-            transform: translate(-50%, -50%);
+            transform: translateX(-50%);
             z-index: 15;
         }
 
-        /* Estilos de botones con efecto de brillo */
         .location-btn {
             display: flex;
             flex-direction: column;
@@ -106,7 +105,6 @@
             margin-top: 5px;
         }
 
-        /* Código único */
         #codigoUnico {
             position: absolute;
             top: 20px;
@@ -133,16 +131,15 @@
 
     <p id="codigoUnico">Código único: <span id="codigo"></span></p>
 
-    <!-- Botones de ubicación -->
     <div class="location-container" id="locationContainer">
-        <button class="location-btn" onclick="window.open('https://www.google.com.mx/maps/place/Red+Casino/@21.0785071,-86.777475,17z/data=!3m1!4b1!4m6!3m5!1s0x8f4c283106086ccb:0x1191f00ed0b3b7a7!8m2!3d21.0785071!4d-86.7749001!16s%2Fg%2F11g7y6b27k?entry=ttu', '_blank')">
+        <button class="location-btn" onclick="window.open('https://www.google.com/maps?q=Red+Casino', '_blank')">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 2C8.13 2 5 5.13 5 9c0 4.25 4.5 10 7 12.71C14.5 19 19 13.25 19 9c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5 14.5 7.62 14.5 9s-1.12 2.5-2.5 2.5z"/>
             </svg>
             <span class="location-text">RED CANCÚN</span>
         </button>
 
-        <button class="location-btn" onclick="window.open('https://www.google.com.mx/maps/place/Galerias+Tec/@31.7143933,-106.4245947,17z/data=!3m2!4b1!5s0x86e75c14073f871f:0x6b878c07d55609f8!4m6!3m5!1s0x86e75c14075f643f:0xeda18e2e1d5772d5!8m2!3d31.7143933!4d-106.4220198!16s%2Fg%2F1vd95k2n?entry=ttu', '_blank')">
+        <button class="location-btn" onclick="window.open('https://www.google.com/maps?q=Galerias+Tec', '_blank')">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 2C8.13 2 5 5.13 5 9c0 4.25 4.5 10 7 12.71C14.5 19 19 13.25 19 9c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5 14.5 7.62 14.5 9s-1.12 2.5-2.5 2.5z"/>
             </svg>
@@ -158,13 +155,18 @@
         const codigoUnico = document.getElementById('codigoUnico');
         const codigoElemento = document.getElementById('codigo');
 
+        if (localStorage.getItem('videoReproducido')) {
+            startButton.style.display = 'none';
+        }
+
         startButton.addEventListener('click', function() {
             video.play();
             startButton.style.display = 'none';
         });
 
         video.addEventListener('ended', function() {
-            videoOverlay.style.background = "rgba(0, 0, 0, 0.5)";
+            localStorage.setItem('videoReproducido', 'true');
+            videoOverlay.style.background = "rgba(0, 0, 0, 0.3)";
             locationContainer.style.display = 'flex';
             const uniqueCode = Math.floor(10000 + Math.random() * 90000);
             codigoElemento.innerText = uniqueCode;
