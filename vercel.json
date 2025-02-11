@@ -1,6 +1,0 @@
-{
-    "routes": [
-      { "src": "/video.mp4", "dest": "/video.mp4" }
-    ]
-  }
-  
